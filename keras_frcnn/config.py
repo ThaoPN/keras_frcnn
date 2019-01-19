@@ -56,7 +56,7 @@ class Config:
         self.model_path = 'model_trained/model_frcnn.vgg.hdf5'
 
         # params add by me
-        self.data_dir = '.data/'
+        self.data_dir = 'dataset/'
         self.num_epochs = 3000
 
         self.kitti_simple_label_file = 'kitti_simple_label.txt'

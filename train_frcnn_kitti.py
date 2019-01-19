@@ -18,7 +18,7 @@ import keras_frcnn.roi_helpers as roi_helpers
 from keras.utils import generic_utils
 import os
 from keras_frcnn import resnet as nn
-from keras_frcnn.simple_parser import get_data
+from keras_frcnn.simple_parser import get_voc_data
 
 
 def train_kitti():
@@ -35,7 +35,7 @@ def train_kitti():
     cfg.model_path = './model/kitti_frcnn_last.hdf5'
     cfg.simple_label_file = 'kitti_simple_label.txt'
 
-    all_images, classes_count, class_mapping = get_data(cfg.simple_label_file)
+    all_images, classes_count, class_mapping = get_voc_data(cfg.data_dir)
 
     if 'bg' not in classes_count:
         classes_count['bg'] = 0
@@ -54,15 +54,15 @@ def train_kitti():
     print('Num classes (including bg) = {}'.format(len(classes_count)))
     random.shuffle(all_images)
     num_imgs = len(all_images)
-    train_imgs = [s for s in all_images if s['imageset'] == 'trainval']
-    val_imgs = [s for s in all_images if s['imageset'] == 'test']
+    # train_imgs = [s for s in all_images if s['imageset'] == 'trainval']
+    # val_imgs = [s for s in all_images if s['imageset'] == 'test']
 
-    print('Num train samples {}'.format(len(train_imgs)))
-    print('Num val samples {}'.format(len(val_imgs)))
+    # print('Num train samples {}'.format(len(train_imgs)))
+    # print('Num val samples {}'.format(len(val_imgs)))
 
-    data_gen_train = data_generators.get_anchor_gt(train_imgs, classes_count, cfg, nn.get_img_output_length,
+    data_gen_train = data_generators.get_anchor_gt(all_images, classes_count, cfg, nn.get_img_output_length,
                                                    K.image_dim_ordering(), mode='train')
-    data_gen_val = data_generators.get_anchor_gt(val_imgs, classes_count, cfg, nn.get_img_output_length,
+    data_gen_val = data_generators.get_anchor_gt(all_images, classes_count, cfg, nn.get_img_output_length,
                                                  K.image_dim_ordering(), mode='val')
 
     if K.image_dim_ordering() == 'th':
